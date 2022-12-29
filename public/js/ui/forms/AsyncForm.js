@@ -5,7 +5,6 @@
     this.registerEvents();
   }
 
-
   registerEvents() {
     this.element.addEventListener('submit', (event) => {
       event.preventDefault();
