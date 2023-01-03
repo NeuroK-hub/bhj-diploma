@@ -1,13 +1,10 @@
-/**
- * Класс CreateTransactionForm управляет формой
- * создания новой транзакции
- * */
- class CreateTransactionForm extends AsyncForm {
+class CreateTransactionForm extends AsyncForm {
   /**
    * Вызывает родительский конструктор и
    * метод renderAccountsList
    * */
-  super(element) {
+  constructor(element) {
+    super(element);
     this.renderAccountsList();
   }
 
@@ -16,15 +13,23 @@
    * Обновляет в форме всплывающего окна выпадающий список
    * */
   renderAccountsList() {
-    Account.list(null, (err, response) => {
-      if (response.success) {
-        let optionsToInsert = ``;
-        response.data.forEach(e => {
-          optionsToInsert += `<option value="${e.id}">${e.name}</option>`;
-        });
-        this.element.querySelector('.accounts-select').innerHTML = optionsToInsert;
-      }
-    })
+
+    const currentUser = User.current();
+    const select = this.element.querySelector('.accounts-select');
+    let selectAccounts ='';
+
+    if (currentUser) {
+      Account.list(currentUser, (err, response) => {
+        if (response && response.success) {
+          response.data.forEach(item => {
+            selectAccounts += `
+              <option value="${item.id}">${item.name}</option>
+            `
+          });
+          select.innerHTML = selectAccounts;
+        };
+      });
+    }
   }
 
   /**
@@ -34,18 +39,13 @@
    * в котором находится форма
    * */
   onSubmit(data) {
-        let modifiedData = data;
-        if (this.element == document.getElementById('new-expense-form')) {
-          modifiedData.type = 'expense';
-        } else {
-          modifiedData.type = 'income';
-        };
-     Transaction.create(modifiedData, (err, response) => {
-       if(response.success) {
-           this.element.reset();
-           this.element.closest('.modal').style.display = 'none';
-           App.update();
-       }
-     });
+    const typeModal = this.element.closest('.modal').dataset.modalId;
+    Transaction.create(data, (err, response) => {
+      if (response && response.success) {
+        App.update();
+        this.element.reset();
+        App.modals[typeModal].close();
+      }
+    });
   }
 }

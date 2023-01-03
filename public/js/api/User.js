@@ -16,7 +16,7 @@ class User {
   }
 
   static fetch(callback) {
-    const xhr = createRequest({
+      createRequest({
        url: this.URL + '/current',
        method: 'GET',
        callback: (err, response) => {
@@ -30,7 +30,7 @@ class User {
     });
   }
   static login( data, callback) {
-   const xhr = createRequest({
+    createRequest({
       url: this.URL + '/login',
       method: 'POST',
       data,
@@ -43,8 +43,8 @@ class User {
     });
   }
 
-  static register( data, callback) {
-     let xhr = createRequest({
+  static register(data, callback) {
+      createRequest({
        url: this.URL + '/register',
        method: 'POST',
        data,
@@ -57,11 +57,10 @@ class User {
     });
   }
 
-  static logout( data, callback) {
-     let xhr = createRequest({
+  static logout(callback) {
+      createRequest({
        url: this.URL + '/logout',
        method: 'POST',
-       data,
        callback: (err, response) => {
           if (response.success) {
              User.unsetCurrent();

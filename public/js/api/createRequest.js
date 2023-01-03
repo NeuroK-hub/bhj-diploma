@@ -1,4 +1,3 @@
-
 const createRequest = (options = {}) => {
   
     let xhr = new XMLHttpRequest();
